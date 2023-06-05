@@ -22,10 +22,10 @@ public class GamePanel extends JPanel implements Runnable{
     Score score;
 
     GamePanel(){
-        newPaddle();
+        newPaddles();
         newBall();
         score = new Score(GAME_WIDTH,GAME_HEIGHT);
-        this.setFocusable(true);
+        this.setFocusable(true); //if i click on the game window it will start recognizing keyboard input
         this.addKeyListener(new AL());
         this.setPreferredSize(SCREEN_SIZE);
 
@@ -37,14 +37,19 @@ public class GamePanel extends JPanel implements Runnable{
     public void newBall(){
 
     }
-    public void newPaddle(){
-
+    public void newPaddles(){
+        paddle1 = new Paddle(0,(GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 1);
+        paddle2 = new Paddle((GAME_WIDTH-PADDLE_WIDTH),(GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 2);
     }
     public void paint(Graphics g){
-
+        image = createImage(getWidth(), getHeight()); //Creat an empty image that takes the dimension of panel
+        graphics = image.getGraphics(); //the get methode returns the unique id of the image to be able to draw on it
+        draw(graphics); //we will draw in the image here (nvm its to put the final drawing in paddle 1 and 2)
+        g.drawImage(image,0,0,this);
     }
     public void draw(Graphics g){
-
+        paddle1.draw(g);
+        paddle2.draw(g);
     }
     public void move(){
 
@@ -53,10 +58,26 @@ public class GamePanel extends JPanel implements Runnable{
 
     }
     public void run(){
-
+        //game loop
+        long lastTime = System.nanoTime();
+        double amountOfTicks = 60.0;
+        double ns = 1000000000 / amountOfTicks;
+        double delta = 0;
+        while(true){
+            long now =System.nanoTime();
+            delta = delta + (now - lastTime)/ns;
+            lastTime = now;
+            if(delta >= 1){
+                move();
+                checkCollision();
+                repaint();
+                delta--;
+                System.out.println("Test");
+            }
+        }
     }
     //Action-listener method for the GamePanel
-    //those keyPressed-released methods will cal the pressed/released of the paddle
+    //those keyPressed/keyReleased methods will call the mothodes pressed/released of the paddle
     public class AL extends KeyAdapter {
         public void KeyPressed(KeyEvent e){
 
