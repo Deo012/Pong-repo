@@ -56,7 +56,19 @@ public class GamePanel extends JPanel implements Runnable{
         paddle2.move();
     }
     public void checkCollision(){
-
+        //stops paddles at windows edges
+        if(paddle1.y <= 0){
+            paddle1.y = 0; //he is stuck at 0 (on top of the screen)
+        }
+        if(paddle1.y >= (GAME_HEIGHT-PADDLE_HEIGHT)){
+            paddle1.y = (GAME_HEIGHT-PADDLE_HEIGHT); //same thing here but at the buttom
+        }
+        if(paddle2.y <= 0){
+            paddle2.y = 0; //he is stuck at 0 (on top of the screen)
+        }
+        if(paddle2.y >= (GAME_HEIGHT-PADDLE_HEIGHT)){
+            paddle2.y = (GAME_HEIGHT-PADDLE_HEIGHT); //same thing here but at the buttom
+        }
     }
     public void run(){
         //game loop
