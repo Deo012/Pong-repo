@@ -7,7 +7,7 @@ import javax.swing.*;
 public class GamePanel extends JPanel implements Runnable{
 
     static final int GAME_WIDTH = 1000;
-    static final int GAME_HEIGHT = (int)(GAME_WIDTH * 0.5555);
+    static final int GAME_HEIGHT = (int)(GAME_WIDTH * (5.0/9.0));
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH,GAME_HEIGHT);
     static final int BALL_DIAMETER = 20;
     static final int PADDLE_WIDTH = 25;
@@ -42,48 +42,50 @@ public class GamePanel extends JPanel implements Runnable{
         paddle2 = new Paddle((GAME_WIDTH-PADDLE_WIDTH),(GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 2);
     }
     public void paint(Graphics g){
-        image = createImage(getWidth(), getHeight()); //Creat an empty image that takes the dimension of panel
-        graphics = image.getGraphics(); //the get methode returns the unique id of the image to be able to draw on it
-        draw(graphics); //we will draw in the image here (nvm its to put the final drawing in paddle 1 and 2)
-        g.drawImage(image,0,0,this);
+        image = createImage(this.getWidth(), this.getHeight()); //create an image
+        graphics = image.getGraphics(); //open the acess to draw on that image
+        draw(graphics); //the drawing on the image happens here
+        g.drawImage(image,0,0,this); //put the masterpiece on the panel
     }
     public void draw(Graphics g){
         paddle1.draw(g);
         paddle2.draw(g);
     }
     public void move(){
-
+        paddle1.move();
+        paddle2.move();
     }
     public void checkCollision(){
 
     }
     public void run(){
         //game loop
-        long lastTime = System.nanoTime();
-        double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
+        long lastTime = System.nanoTime(); //retrive pc time in nanoseconde
+        double amountOfTicks = 60.0; //varable that tells the pc how many game update we want in a second
+        double ns = 1000000000 / amountOfTicks; //variable that calculates the duration of each ticks to be able to fit them in a second (1000000000 is 1 seconde in nanoseconds)
         double delta = 0;
         while(true){
             long now =System.nanoTime();
-            delta = delta + (now - lastTime)/ns;
+            delta = delta + (now - lastTime)/ns; //calculates if enough time has passed(in ticks) to trigger a new update
             lastTime = now;
-            if(delta >= 1){
-                move();
+            if(delta >= 1){ //if delta = 1 enough time has passed
+                move(); //update game internal state
                 checkCollision();
-                repaint();
+                repaint();//draw the new internal state
                 delta--;
-                System.out.println("Test");
             }
         }
     }
     //Action-listener method for the GamePanel
     //those keyPressed/keyReleased methods will call the mothodes pressed/released of the paddle
     public class AL extends KeyAdapter {
-        public void KeyPressed(KeyEvent e){
-
+        public void keyPressed(KeyEvent e){
+            paddle1.keyPressed(e);
+            paddle2.keyPressed(e);
         }
-        public void KeyReleased(KeyEvent e){
-
+        public void keyReleased(KeyEvent e){
+            paddle1.keyReleased(e);
+            paddle2.keyReleased(e);
         }
     }
 }
