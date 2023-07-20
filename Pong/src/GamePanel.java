@@ -75,10 +75,43 @@ public class GamePanel extends JPanel implements Runnable{
         }
         //bounce ball at windows edge
         if((ball.y >= (GAME_HEIGHT-BALL_DIAMETER)) || (ball.y <= 0)){
-            ball.yVelocity *= -1;
+            ball.setYDirection(-ball.yVelocity); //ou ball.yVelocity *= -1
         }
-        if((ball.x >= GAME_HEIGHT) || (ball.x <= 0)){
-            ball.xVelocity *= -1;
+        //bounce ball if paddles
+        if(ball.intersects(paddle1)){
+            ball.xVelocity = -ball.xVelocity;
+            ball.xVelocity++; //increase the speed of the ball each time it bounces off the paddles
+            if (ball.yVelocity > 0){
+                ball.yVelocity++; //gotta increase both at the same time or its only getting faster on the x axis
+            }
+            else {
+                ball.yVelocity--;
+            }
+            ball.setXDirection(ball.xVelocity);
+            ball.setYDirection(ball.yVelocity);
+        }
+        if(ball.intersects(paddle2)){
+            ball.xVelocity = -ball.xVelocity;
+            ball.xVelocity++; // same here: increase the speed of the ball each time it bounces off the paddles
+            if (ball.yVelocity > 0) {
+                ball.yVelocity++;
+            }
+            else {
+                ball.yVelocity--;
+            }
+            ball.setXDirection(ball.xVelocity);
+            ball.setYDirection(ball.yVelocity);
+        }
+        //give a player 1 point and creates new paddles and ball
+        if(ball.x <= 0){
+            score.player2++;
+            newPaddles();
+            newBall();
+        }
+        if(ball.x >= (GAME_WIDTH-BALL_DIAMETER)){
+            score.player1++;
+            newPaddles();
+            newBall();
         }
     }
     public void run(){
